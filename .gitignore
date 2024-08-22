@@ -21,3 +21,4 @@ Cargo.lock
 #.idea/
 quine
 !quine.rs
+qlock
