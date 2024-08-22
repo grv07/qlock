@@ -11,43 +11,47 @@ const PADDING: usize = 2;
 
 fn main() {
     print_time();
-    // print_number(4);
 }
 
 fn print_time() {
-    let t = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_secs();
+    loop {
+        let t = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
 
-    let (h, m, s) = (((t / 3600) + 6) % 12, ((t / 60) + 30) % 60, t % 60);
+        let (h, m, s) = (((t / 3600) + 6) % 12, ((t / 60) + 30) % 60, t % 60);
 
-    println!("Current time: {}", format!("{h:02} : {m:02} : {s:02}"));
+        println!("Current time: {}", format!("{h:02} : {m:02} : {s:02}"));
 
-    println!("");
+        println!("");
 
-    let (h, m, s) = (h as usize, m as usize, s as usize);
+        let (h, m, s) = (h as usize, m as usize, s as usize);
 
-    let hms: [usize; 8] = [h / 10, h % 10, 10, m / 10, m % 10, 10, s / 10, s % 10];
+        let hms: [usize; 8] = [h / 10, h % 10, 10, m / 10, m % 10, 10, s / 10, s % 10];
 
-    let w = (COL_COUNT + PADDING) * (6 + 2);
-    let h = ROW_COUNT;
+        let w = (COL_COUNT + PADDING) * (6 + 2);
+        let h = ROW_COUNT;
 
-    for y in 0..h {
-        for x in 0..w {
-            let i = x / (COL_COUNT + PADDING);
+        for y in 0..h {
+            for x in 0..w {
+                let i = x / (COL_COUNT + PADDING);
 
-            let dx = x % (COL_COUNT + PADDING);
+                let dx = x % (COL_COUNT + PADDING);
 
-            let c = (ROW_COUNT - y - 1) * (COL_COUNT) + (dx);
+                let c = (ROW_COUNT - y - 1) * (COL_COUNT) + (dx);
 
-            if dx < COL_COUNT && ((NUMBER[hms[i]] >> c) & 1) == 1 {
-                print!("\x1b[31m#\x1b[0m");
-            } else {
-                print!("#");
+                if dx < COL_COUNT && ((NUMBER[hms[i]] >> c) & 1) == 1 {
+                    print!("\x1b[31m#\x1b[0m");
+                } else {
+                    print!("#");
+                }
             }
+            println!("");
         }
         println!("");
+
+        std::thread::sleep(std::time::Duration::from_secs(1));
+        print!("{esc}c", esc = 27 as char);
     }
-    println!("");
 }
